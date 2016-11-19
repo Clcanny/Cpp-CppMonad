@@ -30,9 +30,6 @@ class Maybe
         static const Maybe<T> Nothing();
         const bool isJust() const;
         const T fromJust() const;
-        
-    public:
-        std::string print() const;
 };
 
 template <class T>
@@ -66,12 +63,14 @@ const T Maybe<T>::fromJust() const
     return m_value;
 }
 
+/* 可以借助偏特化实现instance typeclass的效果 */
+/* 不必要用继承去强制实现接口（这样instance必须和类的定义写在一起） */
 template <class T>
-std::string Maybe<T>::print() const
+std::string show(Maybe<T> m)
 {
-    if (isJust())
+    if (m.isJust())
     {
-        return std::string("Just ") + std::to_string(fromJust());
+        return std::string("Just ") + std::to_string(m.fromJust());
     }
     else
     {

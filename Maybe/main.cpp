@@ -14,6 +14,6 @@ int main()
     {
         return Maybe<int>::Just(x + 1);
     };
-    std::cout << (a >>= f).print() << std::endl;
-    std::cout << (((a >>= f) >>= f) >>= f).print() << std::endl;
+    std::cout << show(a >>= f) << std::endl;
+    std::cout << show(((a >>= f) >>= f) >>= f) << std::endl;
 }
