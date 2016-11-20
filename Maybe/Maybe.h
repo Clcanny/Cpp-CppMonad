@@ -4,6 +4,7 @@
 #include <cassert>
 #include <functional>
 #include <string>
+#include "../Monad.h"
 #include "../Show.h"
 #include "../TrivalValue.h"
 
@@ -84,16 +85,16 @@ const Maybe<const B> operator>>=
     }
 }
 
-template <class A, class B>
-const Maybe<const B> operator>>
-(const Maybe<const A> a, const Maybe<const B> b)
-{
-    std::function<const Maybe<const B>(const A)> f = [=](const A)
-    {
-        return b;
-    };
-    return a >>= f;
-}
+/* template <class A, class B> */
+/* const Maybe<const B> operator>> */
+/* (const Maybe<const A> a, const Maybe<const B> b) */
+/* { */
+/*     std::function<const Maybe<const B>(const A)> f = [=](const A) */
+/*     { */
+/*         return b; */
+/*     }; */
+/*     return a >>= f; */
+/* } */
 
 template <class A>
 const Maybe<const A> inject(const A value)
