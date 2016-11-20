@@ -4,6 +4,7 @@
 #include <cassert>
 #include <functional>
 #include <string>
+#include "../Show.h"
 
 template <class T>
 class TrivalValue
@@ -105,15 +106,24 @@ const Maybe<const A> inject(const A value)
 }
 
 template <class A>
+class ImpShow<const Maybe<const A> >
+{
+    public:
+        typedef typename ImpShow<const A>::Has Has;
+};
+
+template <class A>
 const std::string show(const Maybe<const A> a)
 {
+    typedef typename ImpShow<const A>::Has Has;
+    static_assert(std::is_same<Has, std::true_type>::value, "");
     if (a.m_valid == false)
     {
         return "Nothing";
     }
     else
     {
-        return std::string("Just ") + std::to_string(a.m_value);
+        return std::string("Just ") + show(a.m_value);
     }
 }
 

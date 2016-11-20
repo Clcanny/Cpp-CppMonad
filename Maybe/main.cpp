@@ -16,5 +16,5 @@ int main()
     std::cout << show(a >> b) << std::endl;
     std::cout << show(b >> a) << std::endl;
     std::cout << show(inject(2)) << std::endl;
-    /* std::cout << show(Maybe<Maybe<int> >::Just(a)) << std::endl; */
+    std::cout << show(Just<const Maybe<const int> >(a)) << std::endl;
 }

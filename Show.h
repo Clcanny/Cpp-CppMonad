@@ -9,17 +9,17 @@ class ImpShow
 };
 
 template <class T>
-std::string show(const T &value);
+std::string show(const T value);
 
 template <>
-class ImpShow<int>
+class ImpShow<const int>
 {
     public:
         typedef std::true_type Has;
 };
 
 template <>
-std::string show(const int &value)
+std::string show(const int value)
 {
     return std::to_string(value);
 }
