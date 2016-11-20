@@ -1,22 +1,20 @@
 #include "Maybe.h"
 #include <iostream>
 
-Maybe<int> f(int x)
-{
-    return Maybe<int>::Just(x + 1);
-}
-
 int main()
 {
-    const Maybe<int> a = Maybe<int>::Just(2);
-    const Maybe<int> b = Maybe<int>::Nothing();
-    std::function<Maybe<int>(const int &)> f = [](int x)
+    const Maybe<const int> a = Just<const int>(2);
+    const Maybe<const int> b = Nothing<const int>();
+    std::function<const Maybe<const int>(const int)> f = [](const int x)
     {
-        return Maybe<int>::Just(x + 1);
+        return Just<const int>(x + 1);
     };
+    a >>= f;
+    (a >>= f) >>= f;
     std::cout << show(a >>= f) << std::endl;
     std::cout << show(((a >>= f) >>= f) >>= f) << std::endl;
     std::cout << show(a >> b) << std::endl;
     std::cout << show(b >> a) << std::endl;
     std::cout << show(inject(2)) << std::endl;
+    /* std::cout << show(Maybe<Maybe<int> >::Just(a)) << std::endl; */
 }
