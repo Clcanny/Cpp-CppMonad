@@ -3,8 +3,8 @@
 
 #include <functional>
 
-template <template<class> class Monad, class T>
-const Monad<const T> inject(const T v);
+template <template<class> class Monad, class A>
+const Monad<const A> inject(const A value);
 
 template <template<class> class Monad, class A, class B>
 const Monad<const B> operator>>=
