@@ -13,6 +13,8 @@
 #include <iostream>
 #include <functional>
 #include <string>
+#include "../Monad.h"
+#include "../Show.h"
 
 template <class T>
 class Maybe
@@ -68,6 +70,8 @@ const T Maybe<T>::fromJust() const
 template <class T>
 std::string show(Maybe<T> m)
 {
+    typedef typename ImpShow<T>::Has Has;
+    static_assert(std::is_same<Has, std::true_type>::value, "");
     if (m.isJust())
     {
         return std::string("Just ") + std::to_string(m.fromJust());
@@ -92,24 +96,6 @@ std::string show(Maybe<T> m)
 /*     } */
 /* } */
 
-template <template<class> class Monad, class A, class B>
-Monad<B> operator>>=(const Monad<A> &a, const std::function<Monad<B>(const A &)> func);
-/* 注释掉关于Maybe的>>=的实现，打开下面三行，可以看到偏特化起作用了 */
-/* { */
-/*     return Monad<A>::Nothing(); */
-/* } */
-
-/* 同Haskell一样，也可以提供一个基础实现 */
-template <template<class> class Monad, class A, class B>
-Monad<B> operator>>(const Monad<A> &a, const Monad<B> &b)
-{
-    std::function<Maybe<B>(const A &)> f = [&](const A &)
-    {
-        return b;
-    };
-    return (a >>= f);
-}
-
 template <class A, class B>
 Maybe<B> operator>>=(const Maybe<A> &a, const std::function<Maybe<B>(const A &)> func)
 {
@@ -122,9 +108,6 @@ Maybe<B> operator>>=(const Maybe<A> &a, const std::function<Maybe<B>(const A &)>
         return func(a.fromJust());
     }
 }
-
-template <template<class> class Monad, class T>
-Monad<T> injetc(const T &v);
 
 template <class T>
 Maybe<T> inject(const T &v)
