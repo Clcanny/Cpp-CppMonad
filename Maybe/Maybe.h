@@ -5,22 +5,7 @@
 #include <functional>
 #include <string>
 #include "../Show.h"
-
-template <class T>
-class TrivalValue
-{
-    public:
-        static T value;
-};
-
-template <>
-class TrivalValue<const int>
-{
-    public:
-        static const int value;
-};
-
-const int TrivalValue<const int>::value = 0;
+#include "../TrivalValue.h"
 
 template <class T>
 class Maybe
@@ -73,6 +58,17 @@ const Maybe<const A> Nothing()
 {
     return Maybe<const A>();
 }
+
+template <class A>
+class TrivalValue<const Maybe<const A> >
+{
+    public:
+        static const Maybe<const A> value;
+};
+
+template <class A>
+const Maybe<const A> TrivalValue<const Maybe<const A> >::value =
+    Nothing<const A>();
 
 template <class A, class B>
 const Maybe<const B> operator>>=
