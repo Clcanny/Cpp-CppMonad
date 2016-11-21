@@ -35,6 +35,6 @@ int main()
     std::cout << show(d >>= funG) << std::endl;
     std::cout << show(a >> b) << std::endl;
     std::cout << show(b >> a) << std::endl;
-    std::cout << show(inject(2)) << std::endl;
+    std::cout << show(inject<Maybe, const int>()(2)) << std::endl;
     std::cout << show(Just<const Maybe<const int> >(a)) << std::endl;
 }

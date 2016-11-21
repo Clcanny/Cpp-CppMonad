@@ -25,8 +25,8 @@ class Maybe
         (const Maybe<const A> a,
          const std::function<const Maybe<const B>(const A)> func);
          
-        template <class A>
-        friend const Maybe<const A> inject(const A value);
+        /* template <class A> */
+        /* friend class inject; */
         
         template <class A>
         friend const Maybe<const A> Just(const A value);
@@ -97,9 +97,16 @@ const Maybe<const B> operator>>=
 /* } */
 
 template <class A>
-const Maybe<const A> inject(const A value)
+class inject<Maybe, A>
 {
-    return Maybe<const A>(value);
+    public:
+        const Maybe<const A> operator()(const A value);
+};
+
+template <class A>
+const Maybe<const A> inject<Maybe, A>::operator()(const A value)
+{
+    return Just<const A>(value);
 }
 
 template <class A>
