@@ -4,7 +4,15 @@
 #include <functional>
 
 template <template<class> class Monad, class A>
-const Monad<const A> inject(const A value);
+class inject
+{
+    public:
+        const Monad<const A> operator()(const A value);
+};
+
+/* template <template<class> class Monad, class A> */
+/* const Monad<const A> inject<Monad, A>::operator()(const A value) */
+/* {} */
 
 template <template<class> class Monad, class A, class B>
 const Monad<const B> operator>>=
