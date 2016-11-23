@@ -79,6 +79,23 @@ const Either<const A, const B> Right(const B b)
     return Either<const A, const B>(b, std::false_type());
 }
 
+/* 检测不完全 */
+template <class A, class B>
+class ImpShow<const Either<const A, const B> >
+{
+    public:
+        typedef typename ImpShow<const A>::Has HasA;
+        typedef typename ImpShow<const B>::Has HasB;
+        typedef HasA Has;
+};
+
+template <class A, class B>
+class ImpMonad<const Either<const A, const B> >
+{
+    public:
+        typedef std::true_type Has;
+};
+
 template <class A, class B>
 const std::string show(const Either<const A, const B> a)
 {
