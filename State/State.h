@@ -1,6 +1,7 @@
 #ifndef State_H
 #define State_H
 
+#include <boost/mpl/placeholders.hpp>
 #include <functional>
 #include <type_traits>
 #include <tuple>
@@ -15,6 +16,16 @@ class State
         State();
         const std::function<const std::tuple<const A, const S>(const S)> runState;
 };
+
+/* template <class S> */
+/* class StateWrapper */
+/* { */
+/*     public: */
+/*         template <class A> */
+/*         { */
+/*             typedef State<const S, const A> StateMonadType; */
+/*         }; */
+/* }; */
 
 template <class S, class A, class B>
 const State<const S, const B> operator>>=
@@ -32,8 +43,9 @@ const State<const S, const B> operator>>=
     return State<const S, const B>(func);
 }
 
+
 template <class S, class A>
-class inject<const State<const S, _1>, const A >
+class inject<State<const S, boost::mpl::placeholders::_1>, A>
 {
     public:
         const State<const A, const A> operator()(const A a)
