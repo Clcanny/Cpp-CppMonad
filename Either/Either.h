@@ -4,6 +4,7 @@
 #include "../Show.h"
 #include "../Monad.h"
 #include "../TrivalValue.h"
+#include "../StaticFunc.h"
 #include <functional>
 #include <type_traits>
 
@@ -84,9 +85,7 @@ template <class A, class B>
 class ImpShow<const Either<const A, const B> >
 {
     public:
-        typedef typename ImpShow<const A>::Has HasA;
-        typedef typename ImpShow<const B>::Has HasB;
-        typedef HasA Has;
+        typedef typename And<typename ImpShow<const A>::Has, typename ImpShow<const B>::Has>::res_type Has;
 };
 
 template <class A, class B>
