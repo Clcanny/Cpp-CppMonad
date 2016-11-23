@@ -1,5 +1,5 @@
 #include "Identity.h"
-/* #include "../Maybe/Maybe.h" */
+#include "../Maybe/Maybe.h"
 #include <iostream>
 
 int main()
@@ -13,6 +13,7 @@ int main()
     const Identity<const char> a = inject<Identity, const char>()('c');
     const Identity<const Identity<const char> > b = inject<Identity, const Identity<const char> >()(a);
     std::cout << show(b) << std::endl;
-    /* const Maybe<const int> c = Just<const int>(2); */
-    /* const Identity<const Maybe<const int> > d = inject<Identity, const Maybe<const int> >()(c); */
+    const Maybe<const int> c = Just<const int>(2);
+    const Identity<const Maybe<const int> > d = inject<Identity, const Maybe<const int> >()(c);
+    std::cout << show(d) << std::endl;
 }
