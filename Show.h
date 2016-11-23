@@ -1,3 +1,6 @@
+#ifndef Show_H
+#define Show_H
+
 #include <type_traits>
 #include <iostream>
 
@@ -36,3 +39,5 @@ const std::string show(const char value)
 {
     return std::string(1, value);
 }
+
+#endif
