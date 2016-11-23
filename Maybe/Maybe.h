@@ -117,6 +117,13 @@ class ImpShow<const Maybe<const A> >
 };
 
 template <class A>
+class ImpMonad<const Maybe<const A> >
+{
+    public:
+        typedef std::true_type Has;
+};
+
+template <class A>
 const std::string show(const Maybe<const A> a)
 {
     typedef typename ImpShow<const A>::Has Has;

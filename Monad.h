@@ -2,6 +2,14 @@
 #define Monad_H
 
 #include <functional>
+#include <type_traits>
+
+template <class T>
+class ImpMonad
+{
+    public:
+        typedef std::true_type Has;
+};
 
 template <template<class> class Monad, class A>
 class inject
