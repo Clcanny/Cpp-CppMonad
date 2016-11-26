@@ -1,20 +1,7 @@
 #ifndef Monad_H
 #define Monad_H
 
-#include <boost/mpl/bind.hpp>
-#include <boost/mpl/placeholders.hpp>
-#include <boost/mpl/apply_wrap.hpp>
-#include <functional>
-#include <type_traits>
-
-using boost::mpl::bind1;
-using boost::mpl::apply_wrap1;
-using boost::mpl::placeholders::_1;
-using std::function;
-using std::true_type;
-using std::false_type;
-using std::tuple;
-using std::get;
+#include "Header.h"
 
 template <class MonadType>
 struct Monad
