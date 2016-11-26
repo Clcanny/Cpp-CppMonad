@@ -103,7 +103,7 @@ struct Show<MaybeWrapper>
     static const string show(typename apply_wrap1<MaybeWrapper, const A>::type a)
     {
         typedef typename Show<const A>::ImpShow Has;
-        /* static_assert(std::is_same<Has, std::true_type>::value, ""); */
+        static_assert(std::is_same<Has, std::true_type>::value, "");
         if (a.m_valid == false)
         {
             return "Nothing";

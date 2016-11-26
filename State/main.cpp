@@ -30,5 +30,5 @@ int main()
     const Maybe<const char> d = Nothing<const char>();
     const Maybe<const Maybe<const int> > e = Just<const Maybe<const int> >(a);
     const Maybe<const Maybe<const int> > h = Nothing<const Maybe<const int> >();
-    std::cout << Show<MaybeWrapper>::show<const apply_wrap1<MaybeWrapper, const int>::type>(e);
+    /* std::cout << Show<MaybeWrapper>::show<const apply_wrap1<MaybeWrapper, const int>::type>(e); */
 }
