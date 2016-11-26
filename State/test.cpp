@@ -1,53 +1,7 @@
-#include <iostream>
+#ifndef State_H
+#define State_H
 
-#include <boost/mpl/bind.hpp>
-#include <boost/mpl/placeholders.hpp>
-#include <boost/mpl/apply_wrap.hpp>
-#include <functional>
-#include <type_traits>
-
-using boost::mpl::bind1;
-using boost::mpl::apply_wrap1;
-using boost::mpl::placeholders::_1;
-using std::function;
-using std::true_type;
-using std::false_type;
-using std::tuple;
-using std::get;
-
-template <class MonadType>
-struct Monad
-{
-    typedef false_type ImpMonad;
-    
-    template <class A>
-    static const typename apply_wrap1<MonadType, const A>::type inject(const A value);
-    
-    template <class A, class B>
-    static const typename apply_wrap1<MonadType, const B>::type bind
-    (
-        const typename apply_wrap1<MonadType, const A>::type a,
-        const function<const typename apply_wrap1<MonadType, const B>::type(const A)> b
-    );
-    
-    template <class A, class B>
-    static const typename apply_wrap1<MonadType, const B>::type bind_
-    (
-        const typename apply_wrap1<MonadType, const A>::type a,
-        const typename apply_wrap1<MonadType, const B>::type b
-    )
-    {
-        const function<const typename apply_wrap1<MonadType, const B>::type(const A)>
-        fn = [&](const A)
-        {
-            return b;
-        };
-        return bind(a, fn);
-    }
-};
-
-template <class S>
-struct StateWrapper;
+#include "Monad.h"
 
 template <class S, class A>
 class State
@@ -120,17 +74,4 @@ struct Monad<StateChar>
     }
 };
 
-int main()
-{
-    Monad<StateChar>::inject(2);
-    const function<const typename apply_wrap1<StateChar, const int>::type(const int)>
-    f = [](const int a)
-    {
-        return Monad<StateChar>().inject(a);
-    };
-    Monad<StateChar>::bind<const int, const int>(Monad<StateChar>().inject(2), f);
-    std::cout << Monad<StateChar>::bind<const int, const int>(Monad<StateChar>().inject(2), f).evalState('c') << std::endl;
-    /* std::cout << (Monad<StateChar>().inject(2)).evalState('c') << std::endl; */
-    const State<const char, const int> s = Monad<StateChar>::inject(2);
-    std::cout << s.evalState('c') << std::endl;
-}
+#endif
