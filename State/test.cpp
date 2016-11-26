@@ -19,23 +19,23 @@ struct Monad
     typedef false_type ImpMonad;
     
     template <class A>
-    const typename apply_wrap1<MonadType, const A>::type inject(const A value);
+    static const typename apply_wrap1<MonadType, const A>::type inject(const A value);
     
     template <class A, class B>
-    const typename apply_wrap1<MonadType, const B>::type bind
+    static const typename apply_wrap1<MonadType, const B>::type bind
     (
         const typename apply_wrap1<MonadType, const A>::type a,
-        function<const typename apply_wrap1<MonadType, const B>::type(const A)> b
+        const function<const typename apply_wrap1<MonadType, const B>::type(const A)> b
     );
     
     template <class A, class B>
-    const typename apply_wrap1<MonadType, const B>::type bind_
+    static const typename apply_wrap1<MonadType, const B>::type bind_
     (
         const typename apply_wrap1<MonadType, const A>::type a,
         const typename apply_wrap1<MonadType, const B>::type b
     )
     {
-        function<const typename apply_wrap1<MonadType, const B>::type(const A)>
+        const function<const typename apply_wrap1<MonadType, const B>::type(const A)>
         fn = [&](const A)
         {
             return b;
@@ -50,11 +50,11 @@ struct StateWrapper;
 template <class S, class A>
 class State
 {
-    public:
+    private:
         const std::function<const std::tuple<const A, const S>(const S)> fn;
         
-    private:
-        friend class Monad<StateWrapper<S> >;
+        template <class T>
+        friend class Monad;
         
     public:
         State(const std::function<const std::tuple<const A, const S>(const S)> f) :
@@ -67,7 +67,7 @@ struct StateWrapper
     template <class A>
     struct apply
     {
-        typedef State<const S, const A> type;
+        typedef const State<const S, const A> type;
     };
 };
 
@@ -78,7 +78,7 @@ struct Monad<StateChar>
     typedef true_type ImpMonad;
     
     template <class A>
-    const typename apply_wrap1<StateChar, const A>::type inject(const A a)
+    static const typename apply_wrap1<StateChar, const A>::type inject(const A a)
     {
         const function<const tuple<const A, const char>(const char)>
         fn = [=](const char s)
@@ -89,7 +89,7 @@ struct Monad<StateChar>
     }
     
     template <class A, class B>
-    const typename apply_wrap1<StateChar, const B>::type bind
+    static const typename apply_wrap1<StateChar, const B>::type bind
     (
         const typename apply_wrap1<StateChar, const A>::type a,
         const function<const typename apply_wrap1<StateChar, const B>::type(const A)> b
@@ -99,7 +99,7 @@ struct Monad<StateChar>
             = [=](const char s)
         {
             const tuple<const A, const char> tmp = a.fn(s);
-            return b.fn(get<0>(tmp)).fn(get<1>(tmp));
+            return b(get<0>(tmp)).fn(get<1>(tmp));
         };
         return State<const char, const B>(fn);
     }
@@ -107,11 +107,11 @@ struct Monad<StateChar>
 
 int main()
 {
-    Monad<StateChar>().inject(2);
+    Monad<StateChar>::inject(2);
     const function<const typename apply_wrap1<StateChar, const int>::type(const int)>
     f = [](const int a)
     {
         return Monad<StateChar>().inject(a);
     };
-    Monad<StateChar>().bind<const int, const int>(Monad<StateChar>().inject(2), f);
+    Monad<StateChar>::bind<const int, const int>(Monad<StateChar>().inject(2), f);
 }
