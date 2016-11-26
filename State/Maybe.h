@@ -95,15 +95,15 @@ struct Monad<MaybeWrapper>
 template <>
 struct Show<MaybeWrapper>
 {
-    /* template <class A> */
-    /* typedef typename Show<const A>::ImpShow ImpShow; */
-    typedef true_type ImpShow;
+    template <class A>
+    using ImpShow = typename Show<const A>::ImpShow;
+    /* typedef true_type ImpShow; */
     
     template <class A>
     static const string show(typename apply_wrap1<MaybeWrapper, const A>::type a)
     {
-        typedef typename Show<const A>::ImpShow ImpShow;
-        static_assert(std::is_same<ImpShow, std::true_type>::value, "");
+        typedef typename Show<const A>::ImpShow Has;
+        /* static_assert(std::is_same<Has, std::true_type>::value, ""); */
         if (a.m_valid == false)
         {
             return "Nothing";

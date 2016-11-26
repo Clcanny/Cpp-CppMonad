@@ -23,4 +23,12 @@ int main()
         return Monad<MaybeWrapper>().inject(a+ 1);
     };
     std::cout << Show<MaybeWrapper>::show<const int>(Monad<MaybeWrapper>::bind<const int, const int>(Monad<MaybeWrapper>::inject(2), g)) << std::endl;
+    
+    const Maybe<const int> a = Just<const int>(2);
+    const Maybe<const int> b = Nothing<const int>();
+    const Maybe<const char> c = Just<const char>('t');
+    const Maybe<const char> d = Nothing<const char>();
+    const Maybe<const Maybe<const int> > e = Just<const Maybe<const int> >(a);
+    const Maybe<const Maybe<const int> > h = Nothing<const Maybe<const int> >();
+    std::cout << Show<MaybeWrapper>::show<const apply_wrap1<MaybeWrapper, const int>::type>(e);
 }
