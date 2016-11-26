@@ -1,94 +1,77 @@
 #ifndef State_H
 #define State_H
 
-#include <boost/mpl/placeholders.hpp>
-#include <functional>
-#include <type_traits>
-#include <tuple>
-#include "../Monad.h"
-#include "../Show.h"
-#include "../StaticFunc.h"
+#include "Monad.h"
 
 template <class S, class A>
 class State
 {
+    private:
+        const std::function<const std::tuple<const A, const S>(const S)> fn;
+        
+        template <class T>
+        friend class Monad;
+        
     public:
-        State();
-        const std::function<const std::tuple<const A, const S>(const S)> runState;
-};
-
-/* template <class S> */
-/* class StateWrapper */
-/* { */
-/*     public: */
-/*         template <class A> */
-/*         { */
-/*             typedef State<const S, const A> StateMonadType; */
-/*         }; */
-/* }; */
-
-template <class S, class A, class B>
-const State<const S, const B> operator>>=
-(const State<const S, const A> f,
- const std::function<const State<const S, const B>(const A)> g)
-{
-    const std::function<const std::tuple<const B, const S>(const S)> func =
-        [=](const S s)
-    {
-        const std::tuple<const A, const S> res1 = f.runState(s);
-        const std::tuple<const A, const S> res2 =
-            g(std::get<0>(res1)).runState(std::get<1>(res1));
-        return std::tuple<const A, const S>(res2);
-    };
-    return State<const S, const B>(func);
-}
-
-
-template <class S, class A>
-class inject<State<const S, boost::mpl::placeholders::_1>, A>
-{
-    public:
-        const State<const A, const A> operator()(const A a)
+        State(const std::function<const std::tuple<const A, const S>(const S)> f) :
+            fn(f) {};
+            
+        const tuple<const A, const S> runState(const S s) const
         {
-            const std::function<const std::tuple<const A, const S>(const S)> func =
-                [=](const S s)
-            {
-                return std::tuple<const A, const S>(a, s);
-            };
-            return State(func);
+            return fn(s);
+        }
+        const A evalState(const S s) const
+        {
+            return get<0>(runState(s));
+        }
+        const S execState(const S s) const
+        {
+            return get<1>(runState(s));
         }
 };
 
-template <class S, class A>
-const std::tuple<const A, const S> runState(const State<const S, const A> state, const S s)
+template <class S>
+struct StateWrapper
 {
-    return state.runState(s);
-}
-
-template <class S, class A>
-const A evalState(const State<const S, const A> state, const S s)
-{
-    return std::get<0>(state.runState(s));
-}
-
-template <class S, class A>
-const S execState(const State<const S, const A> state, const S s)
-{
-    return std::get<1>(state.runState(s));
-}
-
-template <class S, class A>
-class ImpShow<const State<const S, const A> >
-{
-    public:
-        typedef std::false_type Has;
+    template <class A>
+    struct apply
+    {
+        typedef const State<const S, const A> type;
+    };
 };
 
-template <class S, class A>
-class ImpMonad<const State<const S, const A> >
+typedef bind1<StateWrapper<const char>, _1> StateChar;
+template <>
+struct Monad<StateChar>
 {
-    public:
-        typedef std::true_type Has;
+    typedef true_type ImpMonad;
+    
+    template <class A>
+    static const typename apply_wrap1<StateChar, const A>::type inject(const A a)
+    {
+        const function<const tuple<const A, const char>(const char)>
+        fn = [=](const char s)
+        {
+            return tuple<const A, const char>(a, s);
+        };
+        return State<const char, const A>(fn);
+    }
+    
+    template <class A, class B>
+    static const typename apply_wrap1<StateChar, const B>::type bind
+    (
+        const typename apply_wrap1<StateChar, const A>::type a,
+        const function<const typename apply_wrap1<StateChar, const B>::type(const A)> b
+    )
+    {
+        const function<const tuple<const B, const char>(const char)> fn
+            = [=](const char s)
+        {
+            const tuple<const A, const char> tmp = a.fn(s);
+            return b(get<0>(tmp)).fn(get<1>(tmp));
+        };
+        return State<const char, const B>(fn);
+    }
 };
 
 #endif
