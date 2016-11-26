@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <boost/mpl/bind.hpp>
 #include <boost/mpl/placeholders.hpp>
 #include <boost/mpl/apply_wrap.hpp>
@@ -59,6 +61,19 @@ class State
     public:
         State(const std::function<const std::tuple<const A, const S>(const S)> f) :
             fn(f) {};
+            
+        const tuple<const A, const S> runState(const S s) const
+        {
+            return fn(s);
+        }
+        const A evalState(const S s) const
+        {
+            return get<0>(runState(s));
+        }
+        const S execState(const S s) const
+        {
+            return get<1>(runState(s));
+        }
 };
 
 template <class S>
@@ -114,4 +129,8 @@ int main()
         return Monad<StateChar>().inject(a);
     };
     Monad<StateChar>::bind<const int, const int>(Monad<StateChar>().inject(2), f);
+    std::cout << Monad<StateChar>::bind<const int, const int>(Monad<StateChar>().inject(2), f).evalState('c') << std::endl;
+    /* std::cout << (Monad<StateChar>().inject(2)).evalState('c') << std::endl; */
+    const State<const char, const int> s = Monad<StateChar>::inject(2);
+    std::cout << s.evalState('c') << std::endl;
 }
