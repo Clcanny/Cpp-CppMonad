@@ -111,7 +111,8 @@ struct Show<const Identity<const T> >
     {
         typedef typename Show<const T>::ImpShow Has;
         static_assert(std::is_same<Has, std::true_type>::value, "");
-        return std::string("Identity ") + show(a.value);
+        return std::string("Identity ") + Show<const T>::show(a.value);
+        /* return std::string("Identity ") + to_string(a.value); */
     }
 };
 
