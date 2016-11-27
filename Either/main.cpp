@@ -3,7 +3,8 @@
 
 int main()
 {
-    Either<const int, const char> a = Left<const int, const char>(2);
+    /* Either<const int, const char> a = Left<const int, const char>(2); */
+    Either<const int, const char> a = inject<const int, const char>(2);
     Either<const int, const int> b = Left<const int, const int>(3);
     Either<const int, const int> c = Right<const int, const int>(3);
     Either<const int, const Either<const int, const int> > d

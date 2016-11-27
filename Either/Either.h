@@ -68,34 +68,40 @@ template <class A, class B>
 const Either<const A, const B> TrivalValue<const Either<const A, const B> >::value =
     Left<const A, const B>(TrivalValue<const A>::value);
 
+template <class A>
 struct EitherWrapper
 {
-    template <class A, class B>
+    template <class B>
     struct apply
     {
         typedef const Either<const A, const B> type;
     };
 };
 
+template <class T>
+using EitherT = EitherWrapper<const T>;
+
 template <>
-struct Monad<EitherWrapper>
+struct Monad<EitherT>
 {
     typedef true_type ImpMonad;
     
-    template <class A, class B>
-    static const typename apply_wrap2<EitherWrapper, const A, const B>::type inject(const B b)
+    template <class A>
+    static const typename apply_wrap1<EitherT, const A>::type
+    inject(const A a)
     {
-        return Right<const A, const B>(b);
+        return Right<const T, const A>(a);
     }
     
-    template <class A, class B, class C>
-    static const typename apply_wrap2<EitherWrapper, const A, const C>::type bind
-    (const typename apply_wrap2<EitherWrapper, const A, const B>::type a,
-     const function<const typename apply_wrap2<EitherWrapper, const A, const C>::type(const B)> b)
+    template <class A, class B>
+    static const typename apply_wrap1<EitherWrapper<const T>, const A>::type bind
+    (const typename apply_wrap1<EitherWrapper<const T>, const A>::type a,
+     const function<const typename apply_wrap1<EitherWrapper<const T>,
+     const B>::type(const A)> b)
     {
         if (a.isLeft == true)
         {
-            return Left<const A, const C>(a.leftValue);
+            return Left<const T, const B>(a.leftValue);
         }
         else
         {
@@ -103,46 +109,47 @@ struct Monad<EitherWrapper>
         }
     }
     
-    template <class A, class B, class C>
-    static const typename apply_wrap2<EitherWrapper, const A, const C>::type bind_
+    template <class A, class B>
+    static const typename apply_wrap1<EitherWrapper<const T>, const A>::type bind_
     (
-        const typename apply_wrap2<EitherWrapper, const A, const B>::type a,
-        const typename apply_wrap2<EitherWrapper, const A, const C>::type b
+        const typename apply_wrap1<EitherWrapper<const T>, const A>::type a,
+        const typename apply_wrap1<EitherWrapper<const T>, const B>::type b
     )
     {
-        const function<const typename apply_wrap2<EitherWrapper, const A, const C>::type(const B)>
-        fn = [&](const B)
+        const function<const typename apply_wrap1
+        <EitherWrapper<const T>, const B>::type(const A)>
+        fn = [&](const A)
         {
             return b;
         };
-        return bind<const A, const B, const C>(a, fn);
+        return bind<const A, const B>(a, fn);
     }
 };
 
 template <class A, class B>
 const Either<const A, const B> inject(const B b)
 {
-    return Monad<EitherWrapper>::inject<const A, const B>(b);
+    return Monad<EitherWrapper<const A> >::inject<const B>(b);
 }
 
-template <class A, class B, class C>
-const Either<const A, const C> operator>>=
+template <class T, class A, class B>
+const Either<const T, const B> operator>>=
 (
-    const Either<const A, const B> a,
-    const function<const Either<const A, const C>(const B)> b
+    const Either<const T, const A> a,
+    const function<const Either<const T, const B>(const A)> b
 )
 {
-    return Monad<EitherWrapper>::bind<const A, const B, const C>(a, b);
+    return Monad<EitherWrapper<const T> >::bind<const A, const B>(a, b);
 }
 
-template <class A, class B, class C>
-const Either<const A, const B> operator>>
+template <class T, class A, class B>
+const Either<const T, const B> operator>>
 (
-    const Either<const A, const B> a,
-    const Either<const A, const C> b
+    const Either<const T, const A> a,
+    const Either<const T, const B> b
 )
 {
-    return Monad<EitherWrapper>::bind_<const A, const B, const C>(a, b);
+    return Monad<EitherWrapper<const A> >::bind_<const A, const B>(a, b);
 }
 
 template <class A, class B>
