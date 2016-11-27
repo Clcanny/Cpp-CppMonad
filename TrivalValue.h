@@ -1,29 +1,33 @@
 #ifndef TrivalValue_H
 #define TrivalValue_H
 
+#include "Header.h"
+
 template <class T>
-class TrivalValue
+struct TrivalValue
 {
-    public:
-        static T value;
+    static T value;
 };
 
 template <>
-class TrivalValue<const int>
+struct TrivalValue<const int>
 {
-    public:
-        static const int value;
+    static const int value;
 };
-
 const int TrivalValue<const int>::value = 0;
 
 template <>
-class TrivalValue<const char>
+struct TrivalValue<const char>
 {
-    public:
-        static const char value;
+    static const char value;
 };
-
 const char TrivalValue<const char>::value = '0';
+
+template <>
+struct TrivalValue<const string>
+{
+    static const string value;
+};
+const string TrivalValue<const string>::value = "";
 
 #endif

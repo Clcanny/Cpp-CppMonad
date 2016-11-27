@@ -1,20 +1,30 @@
 #ifndef StaticFunc
 #define StaticFunc
 
-#include <type_traits>
+#include "Header.h"
 
-template <class A, class B>
-class And
+template <struct A, struct B>
+struct And
 {
-    public:
-        typedef std::false_type res_type;
+    typedef false_type res_type;
 };
 
 template <>
-class And<std::true_type, std::true_type>
+struct And<true_type, true_type>
 {
-    public:
-        typedef std::true_type res_type;
+    typedef true_type res_type;
+};
+
+template <struct A, struct B>
+struct Or
+{
+    typedef true_type res_type;
+};
+
+template <>
+struct Or<false_type, false_type>
+{
+    typedef false_type res_type;
 };
 
 #endif

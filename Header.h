@@ -15,6 +15,7 @@ using boost::mpl::placeholders::_1;
 using std::function;
 using std::true_type;
 using std::false_type;
+using std::is_same;
 using std::tuple;
 using std::get;
 using std::string;

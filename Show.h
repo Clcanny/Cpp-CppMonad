@@ -1,43 +1,51 @@
 #ifndef Show_H
 #define Show_H
 
-#include <type_traits>
-#include <iostream>
+#include "Header.h"
 
 template <class T>
-class ImpShow
+struct Show
 {
-    public:
-        typedef std::false_type Has;
+    typedef false_type ImpShow;
+    static const string show(const T value);
 };
 
+/* 加一个函数，用起来更加方便 */
 template <class T>
-const std::string show(const T value);
-
-template <>
-class ImpShow<const int>
+const string show(const T value)
 {
-    public:
-        typedef std::true_type Has;
-};
-
-template <>
-const std::string show(const int value)
-{
-    return std::to_string(value);
+    static_assert(is_same<typename Show<const T>::ImpShow, true_type>::value, "");
+    return Show<const T>::show(value);
 }
 
 template <>
-class ImpShow<const char>
+struct Show<const int>
 {
-    public:
-        typedef std::true_type Has;
+    typedef true_type ImpShow;
+    static const string show(const int value)
+    {
+        return to_string(value);
+    }
 };
 
 template <>
-const std::string show(const char value)
+struct Show<const char>
 {
-    return std::string(1, value);
-}
+    typedef true_type ImpShow;
+    static const string show(const char value)
+    {
+        return string(1, value);
+    }
+};
+
+template <>
+struct Show<const string>
+{
+    typedef true_type ImpShow;
+    static const string show(const string value)
+    {
+        return value;
+    }
+};
 
 #endif
