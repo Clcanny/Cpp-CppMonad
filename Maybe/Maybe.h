@@ -60,7 +60,7 @@ struct MaybeWrapper
     template <class T>
     struct apply
     {
-        typedef Maybe<const T> type;
+        typedef const Maybe<const T> type;
     };
 };
 
