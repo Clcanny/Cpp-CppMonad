@@ -1,4 +1,6 @@
 #include "Maybe.h"
+#include "../Show.h"
+#include "../Monad.h"
 #include <iostream>
 
 int main()
@@ -26,15 +28,18 @@ int main()
     };
     
     std::cout << show((a >>= funH) >>= funG) << std::endl;
+    std::cout << Show<const Maybe<const char> >::show(c) << std::endl;
     std::cout << show(c) << std::endl;
-    std::cout << show(e) << std::endl;
-    std::cout << show(f) << std::endl;
+    std::cout << Show<const Maybe<const Maybe<const int> > >::show(e) << std::endl;
+    std::cout << Show<const Maybe<const Maybe<const int> > >::show(f) << std::endl;
+    std::cout << Show<const Maybe<const int> >::show(Monad<MaybeWrapper>::bind<const int, const int>(a, funF)) << std::endl;
     std::cout << show(a >>= funF) << std::endl;
+    std::cout << show(a >> b) << std::endl;
     std::cout << show(((a >>= funF) >>= funF) >>= funF) << std::endl;
     std::cout << show(c >>= funG) << std::endl;
     std::cout << show(d >>= funG) << std::endl;
     std::cout << show(a >> b) << std::endl;
     std::cout << show(b >> a) << std::endl;
-    std::cout << show(inject<Maybe, const int>()(2)) << std::endl;
+    std::cout << show(inject(2)) << std::endl;
     std::cout << show(Just<const Maybe<const int> >(a)) << std::endl;
 }
