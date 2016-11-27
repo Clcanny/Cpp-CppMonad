@@ -1,12 +1,11 @@
 #ifndef Either_H
 #define Either_H
 
+#include "../Header.h"
+#include "../TrivalValue.h"
 #include "../Show.h"
 #include "../Monad.h"
-#include "../TrivalValue.h"
 #include "../StaticFunc.h"
-#include <functional>
-#include <type_traits>
 
 template <class LeftType, class RightType>
 class Either
@@ -23,20 +22,16 @@ class Either
         
     private:
         template <class A, class B>
-        friend const Either<const A, const B> operator>>=
-        (
-            const Either<const A, const B> a,
-            const std::function<const Either<const A, const B>(const B)> func
-        );
-        
-        template <class A, class B>
         friend const Either<const A, const B> Left(const A a);
         
         template <class A, class B>
         friend const Either<const A, const B> Right(const B b);
         
-        template <class A, class B>
-        friend const std::string show(const Either<const A, const B> a);
+        template <class A>
+        friend class Monad;
+        
+        template <class A>
+        friend class Show;
 };
 
 template <class LeftType, class RightType>
@@ -50,6 +45,10 @@ Either<LeftType, RightType>::Either(const RightType r, std::false_type):
     leftValue(TrivalValue<const LeftType>::value),
     rightValue(r),
     isLeft(false) {}
+
+class EitherWrapper
+{
+}
 
 template <class A, class B>
 const Either<const A, const B> operator>>=
