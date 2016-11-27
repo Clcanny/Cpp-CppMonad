@@ -20,9 +20,9 @@ int main()
     const function<const typename apply_wrap1<MaybeWrapper, const int>::type(const int)>
     g = [](const int a)
     {
-        return Monad<MaybeWrapper>().inject(a+ 1);
+        return Monad<MaybeWrapper>().inject(a + 1);
     };
-    std::cout << Show<MaybeWrapper>::show<const int>(Monad<MaybeWrapper>::bind<const int, const int>(Monad<MaybeWrapper>::inject(2), g)) << std::endl;
+    std::cout << Show<const Maybe<const int> >::show(Monad<MaybeWrapper>::bind<const int, const int>(Monad<MaybeWrapper>::inject(2), g)) << std::endl;
     
     const Maybe<const int> a = Just<const int>(2);
     const Maybe<const int> b = Nothing<const int>();
@@ -30,5 +30,5 @@ int main()
     const Maybe<const char> d = Nothing<const char>();
     const Maybe<const Maybe<const int> > e = Just<const Maybe<const int> >(a);
     const Maybe<const Maybe<const int> > h = Nothing<const Maybe<const int> >();
-    /* std::cout << Show<MaybeWrapper>::show<const apply_wrap1<MaybeWrapper, const int>::type>(e); */
+    std::cout << Show<const Maybe<const Maybe<const int> > >::show(e);
 }
