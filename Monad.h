@@ -49,6 +49,9 @@ const typename apply_wrap1<MonadType, const B>::type operator>>=
     const typename apply_wrap1<MonadType, const A>::type a,
     const function<const typename apply_wrap1<MonadType, const B>::type(const A)> b
 );
+/* { */
+/*     return Monad<MonadType>::bind<const A, const B>(a, b); */
+/* } */
 
 template <class MonadType, class A, class B>
 const typename apply_wrap1<MonadType, const B>::type operator>>

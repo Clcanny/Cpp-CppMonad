@@ -11,6 +11,7 @@
 
 using boost::mpl::bind1;
 using boost::mpl::apply_wrap1;
+using boost::mpl::apply_wrap2;
 using boost::mpl::placeholders::_1;
 using std::function;
 using std::true_type;
