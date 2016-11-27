@@ -23,12 +23,16 @@ int main()
         return Monad<MaybeWrapper>().inject(a + 1);
     };
     std::cout << Show<const Maybe<const int> >::show(Monad<MaybeWrapper>::bind<const int, const int>(Monad<MaybeWrapper>::inject(2), g)) << std::endl;
-    
+    const Maybe<const int> x = Monad<MaybeWrapper>::bind<const int, const int>(Monad<MaybeWrapper>::inject(2), g);
+    const Maybe<const int> y = Monad<MaybeWrapper>::bind<const int, const int>(x, g);
+    std::cout << Show<const Maybe<const int> >::show(y) << std::endl;
+    /* std::cout << Show<const Maybe<const int> >::show(Monad<MaybeWrapper>::bind<const int, const int>(Monad<MaybeWrapper>::bind<const int, const int>(Monad<MaybeWrapper>::inject(2), g)), g) << std::endl; */
     const Maybe<const int> a = Just<const int>(2);
     const Maybe<const int> b = Nothing<const int>();
     const Maybe<const char> c = Just<const char>('t');
     const Maybe<const char> d = Nothing<const char>();
     const Maybe<const Maybe<const int> > e = Just<const Maybe<const int> >(a);
     const Maybe<const Maybe<const int> > h = Nothing<const Maybe<const int> >();
-    std::cout << Show<const Maybe<const Maybe<const int> > >::show(e);
+    std::cout << Show<const Maybe<const Maybe<const int> > >::show(e) << std::endl;
+    std::cout << Show<const Maybe<const int> >::show(b) << std::endl;
 }
