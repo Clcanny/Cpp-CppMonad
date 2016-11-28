@@ -65,7 +65,8 @@ struct TrivalValue<const Either<const A, const B> >
 };
 
 template <class A, class B>
-const Either<const A, const B> TrivalValue<const Either<const A, const B> >::value =
+const Either<const A, const B>
+TrivalValue<const Either<const A, const B> >::value =
     Left<const A, const B>(TrivalValue<const A>::value);
 
 template <class A>
@@ -79,15 +80,12 @@ struct EitherWrapper
 };
 
 template <class T>
-using EitherT = EitherWrapper<const T>;
-
-template <>
-struct Monad<EitherT>
+struct Monad<EitherWrapper<const T> >
 {
     typedef true_type ImpMonad;
     
     template <class A>
-    static const typename apply_wrap1<EitherT, const A>::type
+    static const typename apply_wrap1<EitherWrapper<const T>, const A>::type
     inject(const A a)
     {
         return Right<const T, const A>(a);
@@ -129,7 +127,8 @@ struct Monad<EitherT>
 template <class A, class B>
 const Either<const A, const B> inject(const B b)
 {
-    return Monad<EitherWrapper<const A> >::inject<const B>(b);
+    /* return Monad<EitherWrapper<const A> >::template inject<const B>(b); */
+    return typename Monad<EitherWrapper<const A> >::template inject<const B>(b);
 }
 
 template <class T, class A, class B>
@@ -139,7 +138,7 @@ const Either<const T, const B> operator>>=
     const function<const Either<const T, const B>(const A)> b
 )
 {
-    return Monad<EitherWrapper<const T> >::bind<const A, const B>(a, b);
+    return Monad<EitherWrapper<const T> >::template bind<const A, const B>(a, b);
 }
 
 template <class T, class A, class B>
@@ -149,7 +148,7 @@ const Either<const T, const B> operator>>
     const Either<const T, const B> b
 )
 {
-    return Monad<EitherWrapper<const A> >::bind_<const A, const B>(a, b);
+    return Monad<EitherWrapper<const T> >::template bind_<const A, const B>(a, b);
 }
 
 template <class A, class B>
