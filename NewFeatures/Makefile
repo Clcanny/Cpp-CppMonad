@@ -1,2 +1,2 @@
 run :
-	g++ func.cpp
+	g++ -std=c++11 Exp.cpp
