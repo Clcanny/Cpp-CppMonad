@@ -21,34 +21,43 @@ struct Arg2 {};
 /* type Args = [Integer] */
 struct Args
 {
-    Args(int i, int j) {
+    Args(int i, int j)
+    {
         _a[0] = i;
         _a[1] = j;
     }
-    int operator[](int n) { return _a[n]; }
+    int operator[](int n)
+    {
+        return _a[n];
+    }
     int _a[2];
 };
 
 /* newtype Prog t = PR (Args -> t) */
-template<class T> struct PR {
+template<class T> struct PR
+{
     T operator()(Args args);
 };
 
 template<int n>
-struct GetArg { // instance of the concept PR
-    int operator()(Args args) {
+struct GetArg   // instance of the concept PR
+{
+    int operator()(Args args)
+    {
         return args[n];
     }
 };
 
 template<class P1, class P2> // compile-time type parameters
-struct Bind {
+struct Bind
+{
     Bind(P1 prog, std::function<P2(int)> cont)
         : _prog(prog), _cont(cont)
     {}
     P1 _prog;
     std::function<P2(int)> _cont;
-    int operator()(Args args) {
+    int operator()(Args args)
+    {
         int v = _prog(args);
         P2 prog2 = _cont(v);
         return prog2(args);
@@ -66,7 +75,7 @@ struct Return
 };
 
 template<class Exp>
-struct Compile;
+struct Compile {};
 
 template<int c>
 struct Compile<Const<c> > : Return
@@ -78,21 +87,23 @@ template<>
 struct Compile<Arg1> : GetArg<0> {};
 
 template<class L, class R>
-struct Compile<Plus<L, R> > {
-  int operator()(Args args) 
-  {
-    return Bind<Compile<L>, Bind<Compile<R>, Return> > (
-      Compile<L>(),
-      [](int left) -> Bind<Compile<R>, Return> {
-        return Bind<Compile<R>, Return>(
-          Compile<R>(), 
-          [left](int right) -> Return {
-            return Return(left + right);
-          }
-        );
-      }
-    )(args);
-  }
+struct Compile<Plus<L, R> >
+{
+    int operator()(Args args)
+    {
+        return Bind<Compile<L>, Bind<Compile<R>, Return> > (
+                   Compile<L>(),
+                   [](int left) -> Bind<Compile<R>, Return>
+        {
+            return Bind<Compile<R>, Return>(
+                Compile<R>(),
+            [left](int right) -> Return {
+                return Return(left + right);
+            }
+            );
+        }
+               )(args);
+    }
 };
 
 int main()
