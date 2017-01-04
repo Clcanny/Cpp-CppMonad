@@ -130,9 +130,10 @@ struct Compile<Times<L, R> > {
 };
  
 int main(void) {
-    Args args(3, 4);
     Compile<Plus<Times<Arg1, Arg2>, Const<13> > > act;
-    int v = act(args);
+    Compile<Plus<Times<Arg1, Const<12> >, Const<13> > > act2;
+    Args args(3, 4);
+    int v = act2(args);
     std::cout << v << std::endl;
         return 0;
 }
