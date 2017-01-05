@@ -1,6 +1,11 @@
 #include <iostream>
 #include <functional>
  
+/* data Exp = Const Integer */
+/*          | Plus Exp Exp */
+/*          | Times Exp Exp */
+/*          | Arg1 */ 
+/*          | Arg2 */
 template<int n> struct Const {};
 template<class E1, class E2> struct Plus {};
 template<class E1, class E2> struct Times {};
